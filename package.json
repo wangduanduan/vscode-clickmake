@@ -8,7 +8,7 @@
 	"publisher": "eddie2072",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/wangduanduan/clickmake"
+		"url": "https://github.com/wangduanduan/vscode-clickmake"
 	},
 	"engines": {
 		"vscode": "^1.65.0"
