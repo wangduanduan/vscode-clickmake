@@ -15,4 +15,4 @@ export class Config {
 
 
 
-export const EXT_NAME = "vscode-makefile-term";
+export const EXT_NAME = "clickmake";

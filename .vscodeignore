@@ -1,10 +1,24 @@
+# 本扩展是 bundle 模式：main 指向 out/main.js（已打包全部代码），
+# 因此排除整个 out/ 只放行 main.js，并剔除所有开发期文件。
+
+# 源码与编译产物（除打包入口外全部排除）
+src/**
+out/**
+!out/main.js
+
+# 开发 / 工具文件
 .vscode/**
 .vscode-test/**
-src/**
+node_modules/**
 .gitignore
 .yarnrc
+bun.lock
+Makefile
 vsc-extension-quickstart.md
 **/tsconfig.json
 **/.eslintrc.json
 **/*.map
 **/*.ts
+
+# 文档用图（README 通过远程 URL 引用，无需打包）
+media/screenshot.png

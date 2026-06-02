@@ -1,10 +1,10 @@
-# vscode-makefile-term 
+# clickmake 
 
 This extension allows you to run a `Makefile` `target` from within the
 editor by clicking above the `target`. It will execute the following command in the terminal:
 
 ```bash
-cd ${makefileDir} && make -f ${filename} ${target}
+make -C "${makefileDir}" -f ${filename} ${target}
 ```
 
 * `makefileDir` - the directory of the Makefile that is being edited
@@ -12,9 +12,12 @@ cd ${makefileDir} && make -f ${filename} ${target}
 * `target`  - the text found using the following logic: 
   *  any line starting with an alphabeticnumeric string followed by a colon and not including `=`
 
+> `make -C` is used to change directory (instead of a shell `cd ... && ...`) so the
+> command works in shells that do not support `&&`, such as nushell.
+
 ## Features
 
-![screenshot](https://raw.githubusercontent.com/lfmunoz/vscode-makefile-term/main/media/screenshot.png)
+![screenshot](https://raw.githubusercontent.com/lfmunoz/clickmake/main/media/screenshot.png)
 
 
 ## Requirements
@@ -23,46 +26,38 @@ cd ${makefileDir} && make -f ${filename} ${target}
 
 ## Extension Settings
 
-See `package.json` for available settings. 
+* `clickmake.enabled` (boolean, default `true`) — enable or disable processing of Makefiles.
+* `clickmake.parser` (`"split"` | `"fsm"`, default `"split"`) — which parsing implementation to use:
+  * `split` — simple line-split parser. Readable and fast enough for normal Makefiles.
+  * `fsm` — single-pass scanner. ~3x faster on very large files, with identical output.
 
-* vscode-makefile-term.enabled
+CodeLenses are cached per document and only recomputed after the file is saved (or when
+configuration changes), so editing does not re-parse on every keystroke.
+
+## Development
+
+Parsing lives in [`src/MakefileParser.ts`](src/MakefileParser.ts) as pure, vscode-independent
+functions, so it can be unit/perf/fuzz tested without launching VSCode.
+
+```bash
+npm run test:unit   # unit + fuzz + cross-implementation equivalence tests (mocha, no electron)
+npm run bench       # split vs fsm micro-benchmark (bun)
+npm run test        # full integration tests (launches VSCode via @vscode/test-electron)
+```
 
 ## Known Issues
 
-* Can increase performance with a cache
-* Can make extension more adaptable by allowing changing configurable:
-  * command that is execute
-  * text that is displayed above target
+* Command executed and the text displayed above the target are not yet configurable.
 
 ## Release Notes
 
-### 0.0.1
+### 0.4.2
 
-* initial working functionality
-
-### 0.0.2
-
-* target with `=` are ignored
-* make uses -f to specify filename
-
-### 0.0.3
-
-* minor text corrections
-
-### 0.0.4
-
-* added keybidining to run again (Ctrl+Shift+x by default)
-* ignore lines with `=` as cannot be target
-
-### 0.1.0
-
-* Bumping version, extension is getting stable
-* Support for makefile in directory with spaces in path
-* Updated code formatting
-
-### 0.1.1
-
-* Change command to use `&&` instead of `;`
+* CodeLenses are now cached and only recomputed on save instead of on every keystroke
+* Parsing extracted into a pure, testable module with unit / fuzz / benchmark coverage
+* Added `clickmake.parser` setting to choose between the `split` (default) and `fsm` parsers
+* Line endings now handled robustly (`\r\n`, `\n`, and lone `\r`)
+* Removed unimplemented settings (`cacheSize`, `commandTemplate`, `titleTemplate`)
 
 
 -----------------------------------------------------------------------------------------------------------

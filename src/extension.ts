@@ -39,14 +39,16 @@ export function activate(context: vscode.ExtensionContext) {
     // This line of code will only be executed once when your extension is activated
     context.subscriptions.push(vscode.commands.registerCommand(`${EXT_NAME}.make`, (target: string, filename: string) => {
         console.log(`[${EXT_NAME}] - action - target=${target} filename=${filename}!`);
-        const makefileDir = path.dirname(filename);
+        // 用正斜杠，避免反斜杠路径在 nushell 双引号里被当成转义序列（如 \U）报错；make 在 Windows 下接受正斜杠
+        const makefileDir = path.dirname(filename).replace(/\\/g, '/');
         const file = path.basename(filename);
         let term = vscode.window.activeTerminal;
         if (term === undefined) {
             term = vscode.window.createTerminal();
         }
         term.show();
-        Config.runAgain = `cd "${makefileDir}" && make -f ${file} ${target}`;
+        // 用 make -C 切目录而非 shell 的 `cd && `，避免 `&&` 在 nushell 等 shell 下不被支持
+        Config.runAgain = `make -C "${makefileDir}" -f ${file} ${target}`;
         term.sendText(Config.runAgain);
     }));
 }
