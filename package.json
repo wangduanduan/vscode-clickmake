@@ -75,10 +75,9 @@
 		]
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run esbuild-base -- --minify",
-		"esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
-		"esbuild": "npm run esbuild-base -- --sourcemap",
-		"esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+		"vscode:prepublish": "bun build ./src/extension.ts --outdir ./out --entry-naming main.js --external vscode --format=cjs --target=node --minify",
+		"bundle": "bun build ./src/extension.ts --outdir ./out --entry-naming main.js --external vscode --format=cjs --target=node --sourcemap=linked",
+		"bundle-watch": "bun build ./src/extension.ts --outdir ./out --entry-naming main.js --external vscode --format=cjs --target=node --sourcemap=linked --watch",
 		"test-compile": "tsc -p ./",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
@@ -90,7 +89,6 @@
 		"@types/node": "^20.0.0",
 		"@types/vscode": "^1.65.0",
 		"@vscode/test-electron": "^2.1.2",
-		"esbuild": "^0.28.0",
 		"glob": "^11.0.0",
 		"mocha": "^11.0.0",
 		"typescript": "^5.9.0"
