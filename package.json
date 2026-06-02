@@ -2,7 +2,7 @@
 	"name": "clickmake",
 	"displayName": "clickmake",
 	"description": "Run makefiles from within the editor by clicking on target",
-	"version": "0.4.2",
+	"version": "0.4.3",
 	"license": "MIT",
 	"icon": "media/icon.png",
 	"publisher": "eddie2072",
